@@ -53,3 +53,7 @@ body {
   src: url("/public/fonts/Almarai/Almarai-Light.ttf");
   font-weight: 200;
 }
+
+#test {
+  direction: rtl;
+}
