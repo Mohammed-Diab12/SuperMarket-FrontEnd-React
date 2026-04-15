@@ -1,13 +1,55 @@
+:root {
+  /* الألوان الأساسية - الأخضر */
+  --primary-color: #2ecc71; /* الأخضر الزاهي للبراند */
+  --primary-dark: #27ae60; /* أخضر داكن للحالات التفاعلية */
+  --primary-light: #eafaf1; /* أخضر باهت جداً للخلفيات الثانوية */
+
+  /* ألوان الخلفيات */
+  --bg-main: #ffffff; /* الخلفية الأساسية بيضاء */
+  --bg-soft: #f8f9fa; /* خلفية رمادية خفيفة للفواصل */
+
+  /* ألوان النصوص */
+  --text-main: #2c3e50; /* لون النص الأساسي (كحلي غامق) */
+  --text-muted: #7f8c8d; /* لون النصوص الفرعية أو المساعدة */
+
+  /* ألوان العناصر التفاعلية والحدود */
+  --border-color: #e0e0e0; /* لون الحدود الخفيفة */
+  --action-color: #e67e22; /* لون برتقالي للعروض والخصومات */
+  --danger-color: #e74c3c; /* للأخطاء أو حذف العناصر */
+
+  /* إعدادات إضافية */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --radius-md: 8px; /* انحناء الزوايا للعناصر */
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: Cairo;
+  src: url("/public/fonts/Cairo/Cairo-Black.ttf");
+  font-weight: 900;
+}
+@font-face {
+  font-family: Cairo;
+  src: url("/public/fonts/Cairo/Cairo-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Almarai;
+  src: url("/public/fonts/Almarai/Almarai-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Almarai;
+  src: url("/public/fonts/Almarai/Almarai-Light.ttf");
+  font-weight: 200;
 }
