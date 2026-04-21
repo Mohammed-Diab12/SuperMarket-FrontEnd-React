@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+
+.floating-logo-container {
+  position: fixed;
+  top: 16px;
+  right: 24px;
+  z-index: 9999;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-logo-container:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 4px 8px rgba(46, 204, 113, 0.4));
+}
+
+.floating-logo-img {
+  height: 100%;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .floating-logo-container {
+    top: 12px;
+    right: 16px;
+    height: 50px;
+  }
+}

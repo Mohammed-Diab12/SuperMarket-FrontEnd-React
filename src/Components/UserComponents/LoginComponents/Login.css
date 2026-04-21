@@ -1,0 +1,10 @@
+@import "../RegisterComponents/Register.css";
+
+/* Specific styles for Login if any */
+.login-forgot-password {
+  display: block;
+  text-align: right;
+  margin-top: -12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
