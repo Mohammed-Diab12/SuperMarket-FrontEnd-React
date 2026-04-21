@@ -23,7 +23,11 @@ const Home = () => {
         <Box sx={{ width: "140px", height: "40px" }} />
 
         <Tooltip title="المستخدم">
-          <IconButton onClick={() => navigate("/login")} size="large" color="primary">
+          <IconButton
+            onClick={() => navigate("/login")}
+            size="large"
+            color="primary"
+          >
             <AccountCircle sx={{ fontSize: 40 }} />
           </IconButton>
         </Tooltip>
@@ -31,11 +35,14 @@ const Home = () => {
 
       {/* Main Content Placeholder */}
       <Container sx={{ py: 10, textAlign: "center" }}>
-        <Typography variant="h2" sx={{ fontFamily: "Cairo", fontWeight: "700", mb: 2 }}>
+        <Typography
+          variant="h2"
+          sx={{ fontFamily: "Cairo", fontWeight: "700", mb: 2 }}
+        >
           أهلاً بك في متجرنا
         </Typography>
         <Typography variant="h5" color="text.secondary">
-          هذه الصفحة قيد الإنشاء.. قريباً ستجد أفضل العروض هنا.
+          ستظهر هنا أحدث العروض والمنتجات المميزة قريباً.
         </Typography>
       </Container>
     </Box>

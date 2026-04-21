@@ -11,11 +11,13 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { Visibility, VisibilityOff, Lock, Email } from "@mui/icons-material";
+import { Visibility, VisibilityOff, Lock, Email, Person } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
+import AuthLayout from "../Common/AuthLayout";
 
 const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,10 +27,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Professional Email Regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Password strength logic
   useEffect(() => {
     let score = 0;
     if (password.length > 8) score += 25;
@@ -43,7 +43,10 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    // 1) Validation
+    if (name.trim().length < 3) {
+      setError("يرجى إدخال الاسم (3 أحرف على الأقل)");
+      return;
+    }
     if (!emailRegex.test(email)) {
       setError("يرجى إدخال بريد إلكتروني صحيح");
       return;
@@ -60,22 +63,21 @@ const Register = () => {
     setLoading(true);
     setError("");
 
-    // Abort the request automatically if server doesn't respond within 10 seconds
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
-      const apiBaseUrl = process.env.REACT_APP_API_URL || "http://188.0.121.235:3000/api";
+      const apiBaseUrl =
+        process.env.REACT_APP_API_URL || "http://188.0.121.235:3000/api";
       const response = await fetch(`${apiBaseUrl}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
         signal: controller.signal,
       });
 
-      // Safely parse JSON — server might return HTML on errors
       let data = {};
       try {
         data = await response.json();
@@ -84,14 +86,17 @@ const Register = () => {
       }
 
       if (response.ok) {
-        console.log("Registration Successful!", data);
         navigate("/verify");
       } else {
-        setError(data.message || "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.");
+        setError(
+          data.message || "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.",
+        );
       }
     } catch (err) {
       if (err.name === "AbortError") {
-        setError("انتهت مهلة الاتصال. السيرفر لا يستجيب، يرجى المحاولة لاحقاً.");
+        setError(
+          "انتهت مهلة الاتصال. السيرفر لا يستجيب، يرجى المحاولة لاحقاً.",
+        );
       } else {
         console.error("Register Error:", err);
         setError("حدث خطأ في الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.");
@@ -109,168 +114,164 @@ const Register = () => {
   };
 
   return (
-    <Box className="auth-container">
-      {/* Form Side */}
-      <Box className="auth-form-side">
-        <Box className="auth-form-wrapper">
-          <Typography variant="h4" className="auth-title">
-            إنشاء حساب جديد
-          </Typography>
-          <Typography variant="body1" className="auth-subtitle">
-            انضم إلينا واستمتع بتجربة تسوق مميزة
-          </Typography>
+    <AuthLayout
+      imageTitle="سوبر ماركت الخيرات"
+      imageSubtitle="نقدم لكم أفضل العروض وأجود المنتجات الطازجة لتناسب ذوقكم الرفيع"
+    >
+      <Typography variant="h4" className="auth-title">
+        إنشاء حساب جديد
+      </Typography>
+      <Typography variant="body1" className="auth-subtitle">
+        انضم إلينا واستمتع بتجربة تسوق مميزة
+      </Typography>
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 2, borderRadius: "10px" }}>
-              {error}
-            </Alert>
-          )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2, borderRadius: "10px" }}>
+          {error}
+        </Alert>
+      )}
 
-          <form onSubmit={handleRegister} noValidate>
-            <Stack spacing={3}>
-              <TextField
-                fullWidth
-                label="البريد الإلكتروني"
-                variant="outlined"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Email color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <Box>
-                <TextField
-                  fullWidth
-                  label="كلمة المرور"
-                  type={showPassword ? "text" : "password"}
-                  variant="outlined"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={loading}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Lock color="action" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                          disabled={loading}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <Box className="password-strength-meter">
-                  <Box
-                    className="password-strength-bar"
-                    style={{
-                      width: `${strength}%`,
-                      backgroundColor: getStrengthColor(),
-                    }}
-                  />
-                </Box>
-                <Typography variant="caption" color="text.secondary">
-                  قوة كلمة المرور: {strength < 40 ? "ضعيفة" : strength < 80 ? "متوسطة" : "قوية"}
-                </Typography>
-              </Box>
-
-              <TextField
-                fullWidth
-                label="تأكيد كلمة المرور"
-                type="password"
-                variant="outlined"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={loading}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <Button
-                fullWidth
-                variant="contained"
-                size="large"
-                type="submit"
-                disabled={loading}
-                sx={{
-                  py: 1.5,
-                  fontSize: "1.1rem",
-                  fontWeight: "bold",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(46, 204, 113, 0.2)",
-                  textTransform: "none",
-                  minHeight: "56px",
-                }}
-              >
-                {loading ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  "تسجيل الحساب"
-                )}
-              </Button>
-
-              <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
-                لديك حساب بالفعل؟{" "}
-                <Link
-                  component="button"
-                  type="button"
-                  onClick={() => !loading && navigate("/login")}
-                  sx={{
-                    fontWeight: "bold",
-                    textDecoration: "none",
-                    opacity: loading ? 0.6 : 1,
-                    pointerEvents: loading ? "none" : "auto",
-                    cursor: loading ? "default" : "pointer"
-                  }}
-                >
-                  تسجيل الدخول
-                </Link>
-              </Typography>
-            </Stack>
-          </form>
-        </Box>
-      </Box>
-
-
-      {/* Image Side */}
-      <Box
-        className="auth-image-side"
-        sx={{ backgroundImage: `url('/login_register.png')` }}
-      >
-        <Box className="auth-image-content">
-          <Box
-            component="img"
-            src="/Logo.png"
-            alt="Logo"
-            className="auth-image-logo"
+      <form onSubmit={handleRegister} noValidate>
+        <Stack spacing={3}>
+          <TextField
+            fullWidth
+            label="الاسم"
+            variant="outlined"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            disabled={loading}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Person color="action" />
+                </InputAdornment>
+              ),
+            }}
           />
-          <Typography className="auth-image-title">سوبر ماركت الخيرات</Typography>
-          <Typography className="auth-image-subtitle">
-            نقدم لكم أفضل العروض وأجود المنتجات الطازجة لتناسب ذوقكم الرفيع
+
+          <TextField
+            fullWidth
+            label="البريد الإلكتروني"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Email color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Box>
+            <TextField
+              fullWidth
+              label="كلمة المرور"
+              type={showPassword ? "text" : "password"}
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock color="action" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                      disabled={loading}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Box className="password-strength-meter">
+              <Box
+                className="password-strength-bar"
+                style={{
+                  width: `${strength}%`,
+                  backgroundColor: getStrengthColor(),
+                }}
+              />
+            </Box>
+            <Typography variant="caption" color="text.secondary">
+              قوة كلمة المرور:{" "}
+              {strength < 40 ? "ضعيفة" : strength < 80 ? "متوسطة" : "قوية"}
+            </Typography>
+          </Box>
+
+          <TextField
+            fullWidth
+            label="تأكيد كلمة المرور"
+            type="password"
+            variant="outlined"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            disabled={loading}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Lock color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Button
+            fullWidth
+            variant="contained"
+            size="large"
+            type="submit"
+            disabled={loading}
+            sx={{
+              py: 1.5,
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(46, 204, 113, 0.2)",
+              textTransform: "none",
+              minHeight: "56px",
+            }}
+          >
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "تسجيل الحساب"
+            )}
+          </Button>
+
+          <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
+            لديك حساب بالفعل؟{" "}
+            <Link
+              component="button"
+              type="button"
+              onClick={() => !loading && navigate("/login")}
+              sx={{
+                fontWeight: "bold",
+                textDecoration: "none",
+                opacity: loading ? 0.6 : 1,
+                pointerEvents: loading ? "none" : "auto",
+                cursor: loading ? "default" : "pointer",
+              }}
+            >
+              تسجيل الدخول
+            </Link>
           </Typography>
-        </Box>
-      </Box>
-    </Box>
+        </Stack>
+      </form>
+    </AuthLayout>
   );
 };
 
